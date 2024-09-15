@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 function HSVtoRGB(h, s, v) {
   let r, g, b;
@@ -57,7 +57,7 @@ export default function Palette({ colors, selectedStates, updateColor, activeCol
 
   const handleColorClick = (index) => {
     if (!readOnly) {
-      setActiveColorIndex(activeColorIndex === index ? null : index);
+      setActiveColorIndex(prevIndex => prevIndex === index ? null : index);
     }
   };
 
@@ -67,6 +67,20 @@ export default function Palette({ colors, selectedStates, updateColor, activeCol
       drawColorPicker();
     }
   }, [activeColorIndex, hue]);
+
+  const closeColorPicker = useCallback((e) => {
+    if (activeColorIndex !== null && !e.target.closest('.color-picker')) {
+      setActiveColorIndex(null);
+    }
+  }, [activeColorIndex, setActiveColorIndex]);
+  
+  useEffect(() => {
+    document.addEventListener('mousedown', closeColorPicker);
+  
+    return () => {
+      document.removeEventListener('mousedown', closeColorPicker);
+    };
+  }, [closeColorPicker]);
 
   const drawColorPicker = () => {
     const canvas = pickerRef.current;
