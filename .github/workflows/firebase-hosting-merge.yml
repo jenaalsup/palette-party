@@ -27,3 +27,5 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PALETTE_PARTY_552F4 }}
           channelId: live
           projectId: palette-party-552f4
+        env:
+          FIREBASE_CLI_EXPERIMENTS: webframeworks
