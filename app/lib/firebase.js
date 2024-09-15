@@ -12,6 +12,14 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
+// Debug log
+console.log('Firebase config:', {
+  apiKeyLength: firebaseConfig.apiKey?.length || 0,
+  authDomainSet: !!firebaseConfig.authDomain,
+  projectIdSet: !!firebaseConfig.projectId,
+  // ... add other config properties as needed
+});
+
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
