@@ -29,3 +29,7 @@ jobs:
           projectId: palette-party-552f4
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
+      - name: Debug API Key
+        run: echo "API Key length: ${#NEXT_PUBLIC_FIREBASE_API_KEY}"
+        env:
+          NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
