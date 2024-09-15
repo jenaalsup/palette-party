@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Palette from './components/Palette';
 import { motion } from 'framer-motion';
 
@@ -11,6 +11,7 @@ export default function Home() {
     selectedStates: Array(5).fill(false),
     name: ''
   });
+  const [activeColorIndex, setActiveColorIndex] = useState(null);
 
   const updateColor = (index, color) => {
     setCurrentPalette(prev => ({
@@ -38,6 +39,19 @@ export default function Home() {
     //if the palette is incomplete, do nothing
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (activeColorIndex !== null && !event.target.closest('.color-picker')) {
+        setActiveColorIndex(null);
+      }
+    };
+  
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [activeColorIndex]);
+
   return (
     <main className="min-h-screen bg-white p-8 font-sans">
       <h1 className="text-2xl font-light text-gray-600 absolute top-8 left-8">
@@ -48,7 +62,13 @@ export default function Home() {
         animate={{ opacity: 1, scale: 1 }}
         className="bg-white rounded-2xl shadow-lg w-full max-w-2xl mx-auto mt-20 mb-12 overflow-hidden relative"
       >
-        <Palette colors={currentPalette.colors} selectedStates={currentPalette.selectedStates} updateColor={updateColor} />
+        <Palette 
+          colors={currentPalette.colors} 
+          selectedStates={currentPalette.selectedStates} 
+          updateColor={updateColor}
+          activeColorIndex={activeColorIndex}
+          setActiveColorIndex={setActiveColorIndex}
+        />
         <div className="p-6">
           <input
             type="text"
