@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { db, auth } from './lib/firebase';
 import { collection, addDoc, getDocs, query, orderBy, updateDoc, deleteDoc, doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { ratePalette } from './lib/claude';
 
 export default function Home() {
   const [palettes, setPalettes] = useState([]);
@@ -54,6 +55,8 @@ export default function Home() {
       return;
     }
     if (currentPalette.colors.some(color => color !== '#FFFFFF') && currentPalette.name.trim() !== '') {
+      const rating = await ratePalette(currentPalette.colors);
+      
       if (currentPalette.id) {
         // Editing existing palette
         try {
@@ -65,6 +68,7 @@ export default function Home() {
               colors: currentPalette.colors,
               selectedStates: currentPalette.selectedStates,
               name: currentPalette.name,
+              rating: rating,
             });
           } else {
             console.error('Palette not found');
@@ -79,7 +83,8 @@ export default function Home() {
         await addDoc(collection(db, 'palettes'), {
           ...currentPalette,
           createdAt: new Date(),
-          userId: auth.currentUser.uid
+          userId: auth.currentUser.uid,
+          rating: rating,
         });
       }
       loadPalettes();
@@ -260,6 +265,7 @@ export default function Home() {
             />
             <div className="p-6">
               <h3 className="text-xl font-medium text-gray-700 text-center">{palette.name}</h3>
+              <p className="text-sm text-gray-500 text-left mt-2">Rating: {palette.rating || 'N/A'}/3</p>
             </div>
             {palette.isOwner && (
               <div className="absolute top-2 right-2 flex space-x-2">

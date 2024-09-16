@@ -10,9 +10,10 @@
     "deploy": "next build && firebase deploy"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.27.3",
     "firebase": "^10.13.1",
     "framer-motion": "^11.5.4",
-    "next": "14.2.7",
+    "next": "^14.2.11",
     "react": "^18",
     "react-dom": "^18"
   },
